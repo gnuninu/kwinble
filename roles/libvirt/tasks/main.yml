@@ -1,0 +1,12 @@
+  - include: leap152.yml
+    when: kvm_os_version == "leap152"
+  
+  - include: leap152-multi.yml
+    when: kvm_os_version == "leap152multi"
+    
+  - include: sles152.yml
+    when:  kvm_os_version == "sles152"
+
+  - include: sles152-multi.yml
+    when:  kvm_os_version == "sles152multi" 
+  

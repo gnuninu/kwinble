@@ -1,0 +1,40 @@
+---
+- name: check os
+  ping:
+  tags: ping_hosts
+- name: patch servers
+  zypper:
+    name: '*'
+    state: latest
+    update_cache: yes
+  tags: patch_servers
+- name: set hostname
+  hostname:
+    # name: "{{ groups['kvm-client-group'] }}"
+    name: "{{ inventory_hostname }}"
+    use: systemd
+  # loop: "{{ leap152multi }}"
+  # when: kvm_os_version == "leap152multi"
+  tags: set_hostname_leap-multi
+- name: install chronyd
+  zypper:
+    name: chrony
+    state: present
+- name: make sure chronyd is started
+  service:
+    name: chronyd
+    enabled: yes
+    state: started
+- name: Install man-pages
+  zypper: 
+    name: man
+    state: present
+- name: print time
+  debug:
+    msg: "{{ ansible_date_time.time }}"
+  tags: print_time
+- name: print kernel version
+  debug:
+    msg: "{{ ansible_kernel }}"
+  tags: print_kernel
+-

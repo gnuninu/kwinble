@@ -1,0 +1,7 @@
+# tasks file for libvirt--- # Create a KVM VM
+- hosts: localhost
+  user: nicoladm
+  become: yes
+  roles:
+    - libvirt
+

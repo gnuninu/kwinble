@@ -1,0 +1,8 @@
+localhost ansible_connection=local
+
+
+[kvm-group]
+localhost ansible_connection=local
+
+[kvm-client-group]
+

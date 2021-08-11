@@ -1,0 +1,148 @@
+---
+- hosts: localhost
+  become: yes
+  become_method: sudo
+  ignore_errors: yes
+  tasks:
+  - include_vars: variables.yml
+  - name: Check the VM's status
+    virt:
+      command: list_vms
+      state: running
+    register: result
+  - debug: 
+      var: result.list_vms
+  - block:
+    - name: get vms ip address
+      shell: arp-scan --interface="{{ item.bridge }}" --localnet | grep $(virsh domiflist "{{ item.name }}"| awk '{ print $5 }' | tail -2 | head -1)| awk '{ print $1 }'
+    # shell: virsh domifaddr "{{ item.name }}" | grep "ipv4" | awk '{print $4}' | sed "s/\/24//"
+      register: vms_ip_dhcp
+      become: true
+      with_items: "{{ leap152multi }}"
+      tags: get_dhcp_ip
+    - name: set dhcp ip fact
+      set_fact:
+        fact_dhcp_ip:  "{{ fact_dhcp_ip  | default([]) + [item.stdout] }}"
+        cacheable: yes
+      with_items: "{{ vms_ip_dhcp.results }}"
+      tags: fact_dhcp_ip
+    - name: Remove static dhcp ip on libvirt dnsmasq
+      shell: virsh net-update default delete ip-dhcp-host "<host mac='$(sudo virsh domiflist "{{ item.0.name }}"| awk '{ print $5 }' | tail -2 | head -1)' name='"{{ item.0.name }}"' ip='"{{ item.1  }}"' />" --live --config
+      with_together:
+      - "{{ leap152multi }}"
+      - "{{ fact_dhcp_ip }}"
+    - name: Ensure the VM is absent
+      virt:
+        name: "{{ item.name }}"
+        state: destroyed
+      with_items: "{{ leap152multi }}"
+    - name: Ensure the VM is undefined
+      shell: virsh undefine "{{ item.name }}" --nvram
+      with_items: "{{ leap152multi }}"
+    - name: remove VMs images fro storage pool
+      file:
+        path: "{{ libvirt_image_dir }}/{{ item.name }}.qcow2"
+        state: absent
+      with_items: "{{ leap152multi }}"
+    when: kvm_os_version == 'leap152multi'
+  - block:
+    - name: get vms ip address
+      shell: arp-scan --interface="{{ item.bridge }}" --localnet | grep $(virsh domiflist "{{ item.name }}"| awk '{ print $5 }' | tail -2 | head -1)| awk '{ print $1 }'
+    # shell: virsh domifaddr "{{ item.name }}" | grep "ipv4" | awk '{print $4}' | sed "s/\/24//"
+      register: vms_ip_dhcp
+      become: true
+      with_items: "{{ leap152 }}"
+      tags: get_dhcp_ip
+    - name: set dhcp ip fact
+      set_fact:
+        fact_dhcp_ip:  "{{ fact_dhcp_ip  | default([]) + [item.stdout] }}"
+        cacheable: yes
+      with_items: "{{ vms_ip_dhcp.results }}"
+      tags: fact_dhcp_ip
+    - name: Remove static dhcp ip on libvirt dnsmasq
+      shell: virsh net-update default delete ip-dhcp-host "<host mac='$(sudo virsh domiflist "{{ item.0.name }}"| awk '{ print $5 }' | tail -2 | head -1)' name='"{{ item.0.name }}"' ip='"{{ item.1  }}"' />" --live --config
+      with_together:
+      - "{{ leap152 }}"
+      - "{{ fact_dhcp_ip }}"
+    - name: Ensure the VM is absent
+      virt:
+        name: "{{ item.name }}"
+        state: destroyed
+      with_items: "{{ leap152 }}"
+    - name: Ensure the VM is undefined
+      shell: virsh undefine "{{ item.name }}" --nvram
+      with_items: "{{ leap152 }}"
+    - name: remove VMs images fro storage pool
+      file:
+        path: "{{ libvirt_image_dir }}/{{ item.name }}.qcow2"
+        state: absent
+      with_items: "{{ leap152 }}"
+      # - "{{ fact_dhcp_ip }}"
+    when: kvm_os_version == 'leap152'
+  - block:
+    - name: get vms ip address
+      shell: arp-scan --interface="{{ item.bridge }}" --localnet | grep $(virsh domiflist "{{ item.name }}"| awk '{ print $5 }' | tail -2 | head -1)| awk '{ print $1 }'
+    # shell: virsh domifaddr "{{ item.name }}" | grep "ipv4" | awk '{print $4}' | sed "s/\/24//"
+      register: vms_ip_dhcp
+      become: true
+      with_items: "{{ sles152multi }}"
+      tags: get_dhcp_ip
+    - name: set dhcp ip fact
+      set_fact:
+        fact_dhcp_ip:  "{{ fact_dhcp_ip  | default([]) + [item.stdout] }}"
+        cacheable: yes
+      with_items: "{{ vms_ip_dhcp.results }}"
+      tags: fact_dhcp_ip
+    - name: Remove static dhcp ip on libvirt dnsmasq
+      shell: sudo virsh net-update default delete ip-dhcp-host "<host mac='$(sudo virsh domiflist "{{ item.0.name }}"| awk '{ print $5 }' | tail -2 | head -1)' name='"{{ item.0.name }}"' ip='"{{ item.1  }}"' />" --live --config
+      with_together:
+      - "{{ sles152multi }}"
+      - "{{ fact_dhcp_ip }}"
+      tags: remove_dhcp_dnsmasq
+    - name: Ensure the VM is absent
+      virt:
+        name: "{{ item.name }}"
+        state: destroyed
+      with_items: "{{ sles152multi }}"
+    - name: Ensure the VM is undefined
+      shell: virsh undefine "{{ item.name }}" --nvram
+      with_items: "{{ sles152multi }}"
+    - name: remove VMs images fro storage pool
+      file:
+        path: "{{ libvirt_image_dir }}/{{ item.name }}.qcow2"
+        state: absent
+      with_items: "{{ sles152multi }}"
+    when: kvm_os_version == 'sles152multi'
+  - block:
+    - name: get vms ip address
+      shell: arp-scan --interface="{{ item.bridge }}" --localnet | grep $(virsh domiflist "{{ item.name }}"| awk '{ print $5 }' | tail -2 | head -1)| awk '{ print $1 }'
+    # shell: virsh domifaddr "{{ item.name }}" | grep "ipv4" | awk '{print $4}' | sed "s/\/24//"
+      register: vms_ip_dhcp
+      become: true
+      with_items: "{{ sles152 }}"
+      tags: get_dhcp_ip
+    - name: set dhcp ip fact
+      set_fact:
+        fact_dhcp_ip:  "{{ fact_dhcp_ip  | default([]) + [item.stdout] }}"
+        cacheable: yes
+      with_items: "{{ vms_ip_dhcp.results }}"
+      tags: fact_dhcp_ip
+    - name: Remove static dhcp ip on libvirt dnsmasq
+      shell: sudo virsh net-update default delete ip-dhcp-host "<host mac='$(sudo virsh domiflist "{{ item.0.name }}"| awk '{ print $5 }' | tail -2 | head -1)' name='"{{ item.0.name }}"' ip='"{{ item.1  }}"' />" --live --config
+      with_together:
+      - "{{ sles152 }}"
+      - "{{ fact_dhcp_ip }}"
+    - name: Ensure the VM is absent
+      virt:
+        name: "{{ item.name }}"
+        state: destroyed
+      with_items: "{{ sles152 }}"
+    - name: Ensure the VM is undefined
+      shell: virsh undefine "{{ item.name }}" --nvram
+      with_items: "{{ sles152 }}"
+    - name: remove VMs images fro storage pool
+      file:
+        path: "{{ libvirt_image_dir }}/{{ item.name }}.qcow2"
+        state: absent
+      with_items: "{{ sles152 }}"
+    when: kvm_os_version == 'sles152'

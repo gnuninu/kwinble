@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  become: yes
+  become_method: sudo
+  roles:
+    - libvirt
+- hosts: kvm-client-group
+  user: root
+  roles:
+    - base-os
+

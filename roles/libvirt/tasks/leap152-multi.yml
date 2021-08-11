@@ -1,0 +1,98 @@
+---
+  - name: Fetch SLES images
+    copy:
+      src:  "{{ jeos_image_leap152 }}"
+      dest: "{{ libvirt_image_dir }}/{{ item.name }}.qcow2"
+      mode: "644"
+      owner: qemu
+      group: qemu
+    become: true
+    with_items: "{{ leap152multi }}"
+  - name: restart libvirt network
+    shell: virsh net-destroy  "{{ item.network }}" ; virsh net-start "{{ item.network }}"
+    with_items: "{{ leap152multi }}"
+    ignore_errors: true
+    tags: restart_libvirt_net
+  - name: Restart libvirt daemon
+    service:
+      name: libvirtd
+      state: restarted
+    tags: restart_libvirt_daemon
+  - name: Define VM from template
+    virt:
+      name: "{{ item.name }}"
+      command: define
+      xml: "{{ lookup('template', 'leap152.xml.j2') }}"
+    become: true
+    with_items: "{{ leap152multi }}"
+  - name: Start VM 
+    virt:
+      name: "{{ item.name }}"
+      state: running
+    become: true 
+    with_items: "{{ leap152multi }}"
+  - name: Wait for system to become reachable
+    shell: sleep 58
+  - name: Install arp-scan to get ips from the kvm host
+    zypper:
+      name: arp-scan
+      state: present
+    when: ansible_os_family == 'Suse'
+  - name: Install arp-scan to get ips from the kvm host
+    apt:
+      name: arp-scan
+      state: present
+    when: ansible_os_family == 'Debian'
+  - name: Install arp-scan to get ips from the kvm host
+    yum:
+      name: arp-scan
+      state: present
+    when: ansible_os_family == 'RedHat'
+  - name: get vms ip address
+    shell: arp-scan --interface="{{ item.bridge }}" --localnet | grep $(virsh domiflist "{{ item.name }}"| awk '{ print $5 }' | tail -2 | head -1)| awk '{ print $1 }'
+    # shell: virsh domifaddr "{{ item.name }}" | grep "ipv4" | awk '{print $4}' | sed "s/\/24//"
+    register: vms_ip_dhcp
+    become: true
+    with_items: "{{ leap152multi }}"
+    tags: get_dhcp_ip
+  - name: set dhcp ip fact
+    set_fact:
+      fact_dhcp_ip:  "{{ fact_dhcp_ip  | default([]) + [item.stdout] }}"
+      cacheable: yes
+    with_items: "{{ vms_ip_dhcp.results }}"
+    tags: fact_dhcp_ip
+  - name: dhcp ip addresses
+    debug:
+      var: fact_dhcp_ip
+    tags: dhcp_ip
+  - name: set up static dhcp ip on libvirt dnsmasq
+    shell: virsh net-update "{{ item.0.network }}" add ip-dhcp-host "<host mac='$(sudo virsh domiflist "{{ item.0.name }}"| awk '{ print $5 }' | tail -2 | head -1)' name='"{{ item.0.name }}"' ip='"{{ item.1  }}"' />" --live --config
+    ignore_errors: true
+    with_together:
+    - "{{ leap152multi }}"        
+    - "{{ fact_dhcp_ip }}"
+    tags: fact_dhcp_static_ip
+    # - name: add fact hosts in the inventory
+    # ini_file:
+    #  path: /home/nicoladm/ansible-ninu/iaac-1/home-local
+    #  section: kvm-client-group
+    #  option: "{{ item }}"
+    #  allow_no_value: yes
+    #  backup: yes
+    # with_items: "{{ fact_dhcp_ip }}"
+    # tags: add_fact_hosts
+    # - name: add hosts
+    # add_host:
+    #  name: "{{ item }}"
+    #  groups: kvm-client-group
+    # with_items: "{{ fact_dhcp_ip }}"
+    #tags: add_fact_hosts     
+  - name: add hosts
+    add_host:
+      name: "{{ item.0.name }}"
+      ansible_host: "{{ item.1 }}"
+      groups: kvm-client-group
+    with_together:
+    - "{{ leap152multi }}"
+    - "{{ fact_dhcp_ip }}"
+    tags: add_fact_hosts

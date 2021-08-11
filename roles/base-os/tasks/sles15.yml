@@ -1,0 +1,47 @@
+---
+- name: check os
+  ping:
+  tags: ping_hosts
+- name: disable media iso repo
+  shell: "zypper mr -d module-basesystem module-server-applications product-sles152"
+  tags: disable_media_repo
+- name: Register SLES to SCC
+  shell: SUSEConnect -r "{{ SCC_RC }}"
+  ignore_errors: true
+  tags: register_sles
+- name: patch servers
+  zypper:
+    name: '*'
+    state: latest
+    type: patch
+    update_cache: yes
+  tags: patch_servers
+- name: set hostname
+  hostname:
+    # name: "{{ groups['kvm-client-group'] }}"
+    name: "{{ inventory_hostname }}"
+    use: systemd
+  # loop: "{{ leap152multi }}"
+  # when: kvm_os_version == "leap152multi"
+  tags: set_hostname
+- name: install chronyd
+  zypper:
+    name: chrony
+    state: present
+- name: make sure chronyd is started
+  service:
+    name: chronyd
+    enabled: yes
+    state: started
+- name: Install man-pages
+  zypper: 
+    name: man
+    state: present
+- name: print time
+  debug:
+    msg: "{{ ansible_date_time.time }}"
+  tags: print_time
+- name: print kernel version
+  debug:
+    msg: "{{ ansible_kernel }}"
+  tags: print_kernel
