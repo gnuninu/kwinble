@@ -79,7 +79,7 @@ Kiwi is a very powerful tool, for full info visit kiwi [website](https://opensus
 
 ### openSUSE Leap 15.2 build
 
-NOTE: The KIWI templates used to build Leap are fetched from openSUSE JeOS project and then customised: https://build.opensuse.org/package/view_file/openSUSE:Leap:15.2:Images/kiwi-templates-JeOS/JeOS.kiwi?expand=1
+NOTE: The KIWI templates used to build Leap are fetched from openSUSE [JeOS project](https://en.opensuse.org/Portal:JeOS) and then customised: https://build.opensuse.org/package/view_file/openSUSE:Leap:15.2:Images/kiwi-templates-JeOS/JeOS.kiwi?expand=1
 
 `cd jeos_template/opensuse-leap-152`
 
