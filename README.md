@@ -136,7 +136,7 @@ Edit `JeOS.kiwi` and `config.sh` as needed if you want to modify the default con
 
 ## Deploy the VMS with Ansible on Libvirt
 
-`tree -A
+tree -A
 .
 ├── create_kvm_vms.yml
 ├── home-local
@@ -202,7 +202,7 @@ Edit `JeOS.kiwi` and `config.sh` as needed if you want to modify the default con
 │       │   └── test.yml
 │       └── vars
 │           └── main.yml
-└── variables.yml -> roles/libvirt/defaults/main.yml`
+└── variables.yml -> roles/libvirt/defaults/main.yml
 
 ### Overview
 
