@@ -4,7 +4,7 @@ This is a project born with the idea of installing VMs in an automated fashion f
 
 I am aware that there are excellent tools out there like [terraform]( https://www.terraform.io/) or [polumi](https://www.pulumi.com/) for instance, which are probably more suited for daily enterprise usage, however, since I am familiar with ansible and kiwi I have decided to use these in order to keep the stack as simple as possible with a minimum amount of dependencies.
 
-The project is constantly under development and subject to changes, the support for Azure is in the pipeline and it will be added in the future in a form of an Ansible role
+The project is constantly under development and subject to changes, the support for Azure is in the pipeline and under evaluation to be added in the future in a form of an Ansible role
 
 Contributors are warmly welcomed :)
 
