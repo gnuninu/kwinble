@@ -335,7 +335,7 @@
         <package name="xen-libs" arch="x86_64"/>
     </packages>
     <packages type="image" profiles="kvm-and-xen,kvm">
-        <package name="kernel-default-base"/>
+        <package name="kernel-default"/>
     </packages>
     <packages type="image" profiles="kvm-and-xen,kvm,OpenStack-Cloud">
         <package name="qemu-guest-agent"/>
