@@ -65,6 +65,11 @@ Arp-scan is used for IP discovery and is going to be installed automatically if 
 Make sure the local user is added to the libvirt group
 `usermod -aG libvirt <username>`
 
+Configure your local or global `ansible.cfg` to skip the ssh fingerprint host check:
+
+`host_key_checking = False`
+
+
 ### Clone the repo:
 
 `git clone https://github.com/gnuninu/kwinble`
