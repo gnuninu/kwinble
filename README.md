@@ -60,12 +60,12 @@ on Leap 15.2 install KVM patterns:
 
 ### Other required config
 
-Arp-scan is used for IP discovery and is going to be installed automatically if not present by Ansible during the first run.
+- Arp-scan is used for IP discovery and is going to be installed automatically if not present by Ansible during the first run.
 
-Make sure the local user is added to the libvirt group
+- Make sure the local user is added to the libvirt group
 `usermod -aG libvirt <username>`
 
-Configure your local or global `ansible.cfg` to skip the ssh fingerprint host check:
+- Configure your local or global `ansible.cfg` to skip the ssh fingerprint host check:
 
 `host_key_checking = False`
 
