@@ -3,7 +3,7 @@
   ping:
   tags: ping_hosts
 - name: disable media iso repo
-  shell: "zypper mr -d module-basesystem module-server-applications product-sles152"
+  shell: "zypper mr -d module-basesystem module-server-applications product-sles"
   tags: disable_media_repo
 - name: Register SLES to SCC
   shell: SUSEConnect -r "{{ SCC_RC }}"
@@ -13,7 +13,7 @@
   zypper:
     name: '*'
     state: latest
-    type: patch
+    # type: patch
     update_cache: yes
   tags: patch_servers
 - name: set hostname

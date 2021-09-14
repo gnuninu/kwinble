@@ -3,11 +3,11 @@
 <!-- OBS-Profiles: @BUILD_FLAVOR@ -->
 <!-- OBS-Milestone: %current_milestone -->
 
-<image schemaversion="6.1" name="SLES15-SP2-JeOS" displayname="SLES 15 SP2">
+<image schemaversion="6.1" name="SLES15-SP3-JeOS" displayname="SLES 15 SP3">
     <description type="system">
         <author>SUSE LLC</author>
         <contact>crc@suse.com</contact>
-        <specification>SUSE Linux Enterprise 15 SP2 JeOS</specification>
+        <specification>SUSE Linux Enterprise 15 SP3 JeOS</specification>
     </description>
     <users>
       <user password="$1$xyz$YACkVSgLQHtAXVTV.wIyR/" home="/root" name="root" groups="root"/>
@@ -21,7 +21,7 @@
         <profile name="RaspberryPi" description="JeOS for the Raspberry Pi" arch="aarch64"/>
     </profiles>
     <preferences profiles="kvm-and-xen">
-        <version>15.2</version>
+        <version>15.3</version>
         <packagemanager>zypper</packagemanager>
         <bootsplash-theme>SLE</bootsplash-theme>
         <bootloader-theme>SLE</bootloader-theme>
@@ -56,7 +56,7 @@
                 <volume name="usr/local"/>
                 <volume name="var" copy_on_write="false"/>
             </systemdisk>
-            <size unit="G">10</size>
+            <size unit="G">24</size>
         </type>
     </preferences>
 
@@ -257,13 +257,13 @@
         </type>
     </preferences>
     <repository type="rpm-md" alias="product-sles" imageinclude="true">
-            <source path='http://127.0.0.1/sles152/Product-SLES'/>
+            <source path='http://127.0.0.1/sles153/Product-SLES'/>
     </repository> 
     <repository type="rpm-md" alias="module-server-applications" imageinclude="true">
-	    <source path='http://127.0.0.1/sles152/Module-Server-Applications'/>
+            <source path='http://127.0.0.1/sles153/Module-Server-Applications'/>
     </repository>
     <repository type="rpm-md" alias="module-basesystem" imageinclude="true">
-	    <source path='http://127.0.0.1/sles152/Module-Basesystem'/>
+            <source path='http://127.0.0.1/sles153/Module-Basesystem'/>
     </repository>
     <packages type="image">
         <package name="patterns-base-minimal_base"/>
@@ -299,7 +299,7 @@
         <package name="salt-minion"/>
         <package name="dosfstools"/> <!-- For fscking /boot/efi -->
         <package name="lsof"/> <!-- For zypper ps (bsc#1167553) -->
-        <!--package name="jeos-licenses"/-->
+        <!-- package name="jeos-licenses"/-->
         <package name="glibc-locale"/>
         <package name="rsyslog"/> <!-- For SLE -->
         <!-- <package name="systemd-logger"/> for openSUSE -->
