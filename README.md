@@ -175,7 +175,7 @@ NOTE: Before deploying SLES make sure the variable `SCC_RC` is populated with yo
 
 Move into the kwinble root folder.
 
-To deploy on libvirt/kvm we need to populate the `os_install` varibale using the `--extra-vars` option, in this case we choose leap152 (1 Instance):
+To deploy on libvirt/kvm we need to populate the `os_install` varibale using the `--extra-vars` option, in this case we choose leap153 (1 Instance):
 
 `ansible-playbook create_kvm_vms.yml --extra-vars "os_install=leap153" -K -k -u $USER`
 
