@@ -1,0 +1,88 @@
+---
+# defaults file for libvirt---
+SCC_RC: SCC_REGISTRATION_CODE_GOES_HERE
+kvm_os_version: "{{ os_install }}"
+libvirt_image_dir: /var/lib/libvirt/images
+jeos_image_leap152: ../../../jeos_template/opensuse-leap-152/openSUSE-Leap-15.2-JeOS.x86_64-15.2.qcow2
+jeos_image_leap153: ../../../jeos_template/opensuse-leap-153/openSUSE-Leap-15.3-JeOS.x86_64-15.3.qcow2
+jeos_image_sles152: ../../../jeos_template/sles152/SLES15-SP2-JeOS.x86_64-15.2.qcow2
+jeos_image_sles153: ../../../jeos_template/sles153/SLES15-SP3-JeOS.x86_64-15.3.qcow2
+sles152multi:
+  - name: sles152-multi1
+    memory: 1000
+    vcpu: 1
+    network: default
+    bridge: virbr0
+  - name: sles152-multi2
+    memory: 1000
+    vcpu: 1
+    network: default
+    bridge: virbr0
+  - name: sles152-multi3
+    memory: 1200
+    vcpu: 1
+    network: default
+    bridge: virbr0
+sles152:
+  - name: sles152-test1
+    memory: 1200
+    vcpu: 1
+    network: default
+    bridge: virbr0
+leap152multi:
+  - name: leap152-multi1
+    memory: 1200
+    vcpu: 1
+    network: default
+    bridge: virbr0
+  - name: leap152-multi2
+    memory: 1000
+    vcpu: 1
+    network: default
+    bridge: virbr0
+leap152: 
+  - name: leap152-test1
+    memory: 1200
+    vcpu: 1
+    network: default
+    bridge: virbr0
+sles153multi:
+  - name: sles153-multi1
+    memory: 1000
+    vcpu: 1
+    network: default
+    bridge: virbr0
+  - name: sles153-multi2
+    memory: 1000
+    vcpu: 1
+    network: default
+    bridge: virbr0
+  - name: sles153-multi3
+    memory: 1200
+    vcpu: 1
+    network: default
+    bridge: virbr0
+sles153:
+  - name: sles153-test1
+    memory: 1200
+    vcpu: 1
+    network: default
+    bridge: virbr0
+leap153multi:
+  - name: leap153-multi1
+    memory: 1200
+    vcpu: 1
+    network: default
+    bridge: virbr0
+  - name: leap153-multi2
+    memory: 1000
+    vcpu: 1
+    network: default
+    bridge: virbr0
+leap153: 
+  - name: leap153-test1
+    memory: 1200
+    vcpu: 1
+    network: default
+    bridge: virbr0
+
