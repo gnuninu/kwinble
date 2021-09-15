@@ -88,7 +88,7 @@ Kiwi is a very powerful tool, for full info visit kiwi [website](https://opensus
 
 NOTE: The KIWI templates used to build Leap are fetched from openSUSE [JeOS project](https://en.opensuse.org/Portal:JeOS) and then customised: https://build.opensuse.org/package/view_file/openSUSE:Leap:15.2:Images/kiwi-templates-JeOS/JeOS.kiwi?expand=1
 
-`cd jeos_template/opensuse-leap-152`
+`cd jeos_template/opensuse-leap-153`
 
 Edit `JeOS.kiwi` and `config.sh` as needed if you want to modify the default settings
 
@@ -132,7 +132,7 @@ Edit `JeOS.kiwi` and `config.sh` as needed if you want to modify the default con
 
 ### openSUSE Leap 15.3
 
-`cd jeos_template/opensuse-leap-152`
+`cd jeos_template/opensuse-leap-153`
 
 `sudo kiwi-ng --profile=kvm-and-xen system build --description . --target-dir .`
 
