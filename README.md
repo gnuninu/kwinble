@@ -84,7 +84,7 @@ The aim here is to build QCOW images with a small footprint so Ansible can take 
 
 Kiwi is a very powerful tool, for full info visit kiwi [website](https://opensuse.github.io/kiwi/) and read the detailed [documentation](https://osinside.github.io/kiwi/), the following steps are only meant for a quick start and by no means as a replacement of the official documentation.
 
-### openSUSE Leap 15.2 build
+### openSUSE Leap 15.3 build
 
 NOTE: The KIWI templates used to build Leap are fetched from openSUSE [JeOS project](https://en.opensuse.org/Portal:JeOS) and then customised: https://build.opensuse.org/package/view_file/openSUSE:Leap:15.2:Images/kiwi-templates-JeOS/JeOS.kiwi?expand=1
 
@@ -92,7 +92,7 @@ NOTE: The KIWI templates used to build Leap are fetched from openSUSE [JeOS proj
 
 Edit `JeOS.kiwi` and `config.sh` as needed if you want to modify the default settings
 
-### SLES 15 SP2 build
+### SLES 15 SP3 build
 
 The package `kiwi-templates-JeOS` provides the templates for SLES and it's availbale in the `sle-module-development-tools` channel module
 
