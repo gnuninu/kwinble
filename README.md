@@ -1,5 +1,7 @@
 # Kwinble - Infrastracture as a code project based on ansible and kiwi
 
+**NEWS:  Added support for opensuse Leap 15.3 and SLES 15 SP3!**
+
 This is a project born with the idea of installing VMs in an automated fashion for personal labs use at work on libvirt/KVM platforms, it's experimental and developed with a "learn by doing" attitude.
 
 I am aware that there are excellent tools out there like [terraform]( https://www.terraform.io/) or [pulumi](https://www.pulumi.com/) for instance, which are probably more suited for daily enterprise usage, however, since I am familiar with ansible and kiwi I have decided to use these in order to keep the stack as simple as possible with a minimum amount of dependencies.
@@ -98,43 +100,45 @@ In order to build SUSE Enterprise Linux a subscription is necessary to access th
 
 Once a media is retrieved, it can be mounted locally, for example:
 
-`sudo mount -o loop /nico-stuff/ISO/SLE-15-SP2-Full-x86_64-QU2-Media1.iso /mnt/sles-iso`
+`mkdir -p /mnt/sles-iso/sles153`
+
+`sudo mount -o loop SLE-15-SP3-Full-x86_64-GM-Media1.iso /mnt/sles-iso/sles153`
 
 Enable the installation server (HTTP) keeping the default settings using yast:
 
 `yast instserver`
 
-Name: `leap15-2`
+Name: `sles153`
 
 Directory: `/srv/install`
 
 then create a symbolic link to the local installation server directory:
 
-`sudo ln -s /mnt/sles-iso /srv/install/sles152/`
+`sudo ln -s /mnt/sles-iso/sles153 /srv/install/`
 
 Disable the firewall or make sure `localhost:80` port is open
 
 The resulting locally served directory can be configured in the repository section of kiwi in this way:
 
-`    <repository type="rpm-md" alias="product-sles152" imageinclude="true">
-            <source path='http://127.0.0.1/sles152/sles-iso/Product-SLES'/>
+`    <repository type="rpm-md" alias="product-sles153" imageinclude="true">
+            <source path='http://127.0.0.1/sles153/Product-SLES'/>
      </repository>`
 
-`cd jeos_template/sles152/`
+`cd jeos_template/sles153/`
 
 Edit `JeOS.kiwi` and `config.sh` as needed if you want to modify the default config
 
 ## Build the image
 
-### openSUSE Leap 15.2
+### openSUSE Leap 15.3
 
 `cd jeos_template/opensuse-leap-152`
 
 `sudo kiwi-ng --profile=kvm-and-xen system build --description . --target-dir .`
 
-### SLES 15 SP2
+### SLES 15 SP3
 
-`cd jeos_template/sles152/`
+`cd jeos_template/sles153/`
 
 `sudo kiwi-ng --profile=kvm-and-xen system build --description . --target-dir .`
 
@@ -148,13 +152,16 @@ The type of installations are controlled by a variable that needs to be passed t
 
 The following types are available and mapped to the dictionaries predefined in the libvirt role here: `roles/libvirt/defaults/main.yml`
 
-**sles152multi**    -  3 sles 15 SP2 instances
-
-**sles152** -  1 sles 15 SP2 instances
-
-**leap152multi**    -  2 leap 15.2 instances
-
-**leap152** -  1 leap 15.2 instance
+|   os_install var    | Description |
+| --------------------|------------ |
+|**sles152multi**     |3 sles 15 SP2 instances
+|**sles152**          |1 sles 15 SP2 instances
+|**sles153multi**     |3 sles 15 SP3 instances
+|**sles153**          |1 sles 15 SP3 instances
+|**leap152multi**     | 2 leap 15.2 instances
+|**leap152**          | 1 leap 15.2 instance
+|**leap153multi**     | 2 leap 15.3 instances
+|**leap153**          | 1 leap 15.3 instance
 
 The number of instances can be added or removed by modifying the yaml file and/or reused as templates
 
@@ -170,13 +177,13 @@ Move into the kwinble root folder.
 
 To deploy on libvirt/kvm we need to populate the `os_install` varibale using the `--extra-vars` option, in this case we choose leap152 (1 Instance):
 
-`ansible-playbook create_kvm_vms.yml --extra-vars "os_install=leap152" -K -k -u $USER`
+`ansible-playbook create_kvm_vms.yml --extra-vars "os_install=leap153" -K -k -u $USER`
 
 when prompted type the root password set previously by kiwi during the image build which by default is: **linux**, then your user sudo password
 
 To remove the VMs installation run ansible using the same os_install variable but this time invoking `remove_kvm_vms.yml` playbook:
 
-`ansible-playbook remove_kvm_vms.yml --extra-vars "os_install=leap152" -K -u $USER`
+`ansible-playbook remove_kvm_vms.yml --extra-vars "os_install=leap153" -K -u $USER`
 
 Local storage and static IP DHCP mappings will be deleted as well
 
